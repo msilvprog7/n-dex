@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container adjust-top">
+</div>
+
+<div class="container">
+	<div class="page-header">
+		<h2>{{ request.user.first_name }}'s Collections</h2>
+	</div>
+</div>
+
+<div class="container">
+	<div class="alert alert-info">
+		You don't currently have any collections. Try making one!
+	</div>
+</div>
+
+
+{% endblock %}

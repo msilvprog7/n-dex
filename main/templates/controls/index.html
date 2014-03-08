@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block moreScript %}
+<script type="text/javascript">
+	$(document).ready(function() {
+
+		$("#login_btn").click(function() {
+			if($(".registration").css("display") !== "none")
+			{
+				$("#login_form").attr("action", "/login/");
+				$(".form-text").text("Login");
+				$(".registration").slideUp();
+				return false;
+			}
+		});
+
+		$("#register_btn").click(function() {
+			if($(".registration").css("display") === "none")
+			{
+				$("#login_form").attr("action", "/register/");
+				$(".form-text").text("Registration");
+				$(".registration").slideDown();
+				return false;
+			}
+		});
+
+	});
+</script>
+{% endblock %}
+
+{% block content %}
+
+
+
+<div class="jumbotron">
+	<div class="container adjust-top">
+		<h1>n-dex</h1>
+	</div>
+
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-6">
+				
+				<hr />
+				<p>A whole new take on flashcards</p>
+			</div>
+			<div class="col-lg-6">
+				<div class="well bs-component">
+					<form method="post" role="form" action ="/login/" class="form-horizontal" id="login_form">
+					{% csrf_token %}
+
+					{% if messages %}
+						{% for message in messages %}
+							<div class="alert alert-danger">
+								{{ message }}
+							</div>
+						{% endfor %}
+					{% endif %}
+
+						<fieldset>
+							<legend class="form-text">Login</legend>
+							<div class="form-group">
+									<label for="username" class="col-lg-3 control-label">Username</label>
+									<div class="col-lg-9">
+										<input type="text" class="form-control" id="username" name="username" placeholder="username" />
+									</div>
+							</div>
+							<div class="form-group">
+									<label for="password" class="col-lg-3 control-label">Password</label>
+									<div class="col-lg-9">
+										<input type="password" class="form-control" id="password" name="password" placeholder="password" />
+									</div>
+							</div>
+
+							<div class="registration" style="display: none;">
+								<div class="form-group">
+									<label for="confirm_password" class="col-lg-3 control-label"></label>
+									<div class="col-lg-9">
+										<input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="password (again)" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="email" class="col-lg-3 control-label">Email</label>
+									<div class="col-lg-9">
+										<input type="text" class="form-control" id="email" name="email" placeholder="email" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="first_name" class="col-lg-3 control-label">First Name</label>
+									<div class="col-lg-9">
+										<input type="text" class="form-control" id="first_name" name="first_name" placeholder="first name" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="last_name" class="col-lg-3 control-label">Last Name</label>
+									<div class="col-lg-9">
+										<input type="text" class="form-control" id="last_name" name="last_name" placeholder="last name" />
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="col-lg-10 col-lg-offset-6">
+									<button type="submit" id="login_btn" class="btn btn-primary">sign in</button>
+									<button type="submit" id="register_btn" class="btn btn-default">register</button>
+								</div>
+							</div>
+						</fieldset>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+
+{% endblock %}
