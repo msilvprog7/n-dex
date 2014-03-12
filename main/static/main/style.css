@@ -10,6 +10,9 @@
 .adjust-top {
 	margin-top: 40px;
 }
+	.adjust-top-slight {
+		margin-top: 10px;
+	}
 
 	.anchor {
 		display: block;
@@ -17,3 +20,7 @@
 		top: -40px;
 		visibility: hidden;
 	}
+
+.right-float {
+	float: right;
+}

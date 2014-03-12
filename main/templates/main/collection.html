@@ -4,14 +4,14 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 
-		$("#add_collection_btn").click(function() {
-			if($("#add_collection_row").css("display") === "none")
+		$("#add_cardset_btn").click(function() {
+			if($("#add_cardset_row").css("display") === "none")
 			{
-				$("#add_collection_row").slideDown();
+				$("#add_cardset_row").slideDown();
 				return false;
 			}else
 			{
-				$("#add_collection_row").slideUp();
+				$("#add_cardset_row").slideUp();
 				return false;
 			}
 		});
@@ -20,14 +20,14 @@
 
 	function confirmDelete(name)
 	{
-		return confirm("Are you sure you want to delete collection: " + name + "?");
+		return confirm("Are you sure you want to delete cardset: " + name + "?");
 	}
 
 	function deleteSubmit(name, id)
 	{
 		if(confirmDelete(name))
 		{
-			$("#delete_collection_" + id).submit();
+			$("#delete_cardset_" + id).submit();
 		}
 
 		return false;
@@ -43,12 +43,12 @@
 
 <div class="container adjust-top">
 	<div class="jumbotron">
-		<h2>{{ request.user.first_name }}'s Collections</h2>
-		<button id="add_collection_btn" class="btn btn-primary"><i class="fa fa-plus"></i> add collection</button>
-		<div class="row adjust-top-slight" id="add_collection_row" style={% if messages %}""{% else %}"display: none;"{% endif %}>
+		<h2>{{ collection.name }}</h2>
+		<button id="add_cardset_btn" class="btn btn-primary"><i class="fa fa-plus"></i> add cardset</button>
+		<div class="row adjust-top-slight" id="add_cardset_row" style={% if messages %}""{% else %}"display: none;"{% endif %}>
 			<div class="col-lg-6">
 					<div class="well bs-component">
-						<form method="post" role="form" action ="/home/add-collection/" class="form-horizontal" id="add_collection_form">
+						<form method="post" role="form" action ="/home/add-cardset/" class="form-horizontal" id="add_cardset_form">
 						{% csrf_token %}
 
 						{% if messages %}
@@ -60,7 +60,8 @@
 						{% endif %}
 
 							<fieldset>
-								<legend class="form-text">Add Collection</legend>
+								<legend class="form-text">Add Cardset</legend>
+								<input type="hidden" name="collection_name" value="{{ collection.name }}" />
 								<div class="form-group">
 										<label for="name" class="col-lg-3 control-label">Name</label>
 										<div class="col-lg-9">
@@ -87,26 +88,27 @@
 </div>
 
 <div class="container">
-	{% for collection in collections %}
+	{% for cardset in cardsets %}
 		<div class="col-lg-4">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<a href="/home/{{ collection.id }}/">{{ collection.name }}</a>
-					<a href="#" onclick="return deleteSubmit('{{ collection.name }}', {{ collection.id }});" class="right-float"><i class="fa fa-minus-circle"></i></a>
-					<form action="/home/delete-collection/" method="post" role="form" id="delete_collection_{{ collection.id }}">
+					<a href="/home/{{ collection.id }}/{{ cardset.id }}/">{{ cardset.name }}</a>
+					<a href="#" onclick="return deleteSubmit('{{ cardset.name }}', {{ cardset.id }});" class="right-float"><i class="fa fa-minus-circle"></i></a>
+					<form action="/home/delete-cardset/" method="post" role="form" id="delete_cardset_{{ cardset.id }}">
 					{% csrf_token %}
-						<input type="hidden" name="name" value="{{ collection.name }}" />
+						<input type="hidden" name="collection_name" value="{{ collection.name }}" />
+						<input type="hidden" name="name" value="{{ cardset.name }}" />
 					</form>
 				</div>
 				<div class="panel-body">
-					{{ collection.description }}
+					{{ cardset.description }}
 				</div>
 			</div>
 		</div>
 	{% empty %}
 		<div class="alert alert-info">
-			You don't currently have any collections. Try making one!<br />
-			A collection is simply a way of organizing your cardsets.
+			You don't currently have any cardsets.<br />
+			A cardset is a set of cards within one of your collections.
 		</div>
 	{% endfor %}
 </div>
