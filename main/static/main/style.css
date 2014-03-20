@@ -24,3 +24,26 @@
 .right-float {
 	float: right;
 }
+	
+	.right {
+			text-align: right;
+		}
+
+
+.shifted {
+	margin-left: 50px;
+	margin-right: 50px;
+}
+
+
+.inline {
+	display: inline-block;
+}
+
+.front-image {
+	cursor: pointer;
+
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}

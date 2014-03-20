@@ -171,11 +171,82 @@ class CardView(TemplateView):
 		if len(models.CardSet.objects.filter(user=request.user, collection_id=int(kwargs["collection_id"]), id=int(kwargs["cardset_id"]))) <= 0:
 			return redirect("/home/")
 
+		cardset = models.CardSet.objects.filter(user=request.user, collection_id=int(kwargs["collection_id"]), id=int(kwargs["cardset_id"])).first()
+		num_cards = len(models.Card.objects.filter(user=request.user, collection_id=int(kwargs["collection_id"]), cardSet_id=int(kwargs["cardset_id"])))
+
+		if ('current_card' in kwargs) and (int(kwargs["current_card"]) <= 0 or int(kwargs["current_card"]) > num_cards):
+			return redirect("/home/" + str(cardset.collection_id) + "/" + str(cardset.id) + "/")
+
 		return super(CardView, self).dispatch(request, *args, **kwargs)
+
+	def post(self, request, *args, **kwargs):
+		cardset = models.CardSet.objects.filter(user=request.user, collection_id=int(kwargs["collection_id"]), id=int(kwargs["cardset_id"])).first()
+		num_cards = len(models.Card.objects.filter(user=request.user, collection_id=cardset.collection_id, cardSet_id=cardset.id))
+
+		# new card created on top
+		if ('new_card' in request.POST and request.POST["new_card"] == "card-on-top"):
+			# increment old cards positions
+			for card in models.Card.objects.filter(user=request.user, collection_id=cardset.collection_id, cardSet_id=cardset.id):
+				card.position += 1
+				card.save()
+
+			new_card = models.Card(user=request.user, collection_id=cardset.collection_id, cardSet_id=cardset.id, position=1, front="", back="")
+			new_card.save()
+
+			#redirect
+			return redirect("/home/" + str(cardset.collection_id) + "/" + str(cardset.id) + "/" + "1#edit")
+
+		elif ('edit_card' in request.POST and request.POST['edit_card'] == "edit-card") and ('front' in request.POST and 'frontImage' in request.POST and 'back' in request.POST):
+			#update card content
+			if ('current_card' in kwargs and int(kwargs["current_card"]) > 0 and int(kwargs["current_card"]) <= num_cards):
+				edit_card = models.Card.objects.filter(user=request.user, collection_id=cardset.collection_id, cardSet_id=cardset.id, position=int(kwargs["current_card"])).first()
+				
+				edit_card.front = request.POST["front"]
+				edit_card.frontImage = (request.POST["frontImage"] == "true")
+				edit_card.back = request.POST["back"]
+
+				edit_card.save()
+
+				#let redirect to current card as specified below
+
+		elif ('delete_card' in request.POST and request.POST['delete_card'] == "delete-card"):
+			# delete this card
+			delete_card = models.Card.objects.filter(user=request.user, collection_id=cardset.collection_id, cardSet_id=cardset.id, position=int(kwargs["current_card"])).first()
+			delete_card.delete()
+			
+			# re-order other positions after this
+			for currentPosition in range(int(kwargs["current_card"]) + 1, num_cards + 1):
+				currentCard = models.Card.objects.filter(user=request.user, collection_id=cardset.collection_id, cardSet_id=cardset.id, position=currentPosition).first()
+				currentCard.position = currentPosition - 1
+				currentCard.save()
+
+			# redirect based on cards left and current position
+
+			num_cards = len(models.Card.objects.filter(user=request.user, collection_id=cardset.collection_id, cardSet_id=cardset.id))
+
+			if (num_cards <= 0):
+				return redirect("/home/" + str(cardset.collection_id) + "/" + str(cardset.id) + "/")
+			elif (int(kwargs["current_card"]) > num_cards):
+				return redirect("/home/" + str(cardset.collection_id) + "/" + str(cardset.id) + "/" + str(int(kwargs["current_card"]) - 1))
+
+			# else redirect to current card
+
+
+
+		current_card_str = ""
+		if ('current_card' in kwargs):
+			current_card_str = kwargs["current_card"]
+
+		return redirect("/home/" + str(cardset.collection_id) + "/" + str(cardset.id) + "/" + current_card_str)
 
 	def get_context_data(self, **kwargs):
 		context = super(CardView, self).get_context_data(**kwargs)
 
+		context["collection"] = models.Collection.objects.filter(user=self.request.user, id=int(kwargs["collection_id"])).first()
+		context["cardset"] = models.CardSet.objects.filter(user=self.request.user, collection_id=int(kwargs["collection_id"]), id=int(kwargs["cardset_id"])).first()
 
+		context["num_cards"] = len(models.Card.objects.filter(user=self.request.user, collection_id=int(kwargs["collection_id"]), cardSet_id=int(kwargs["cardset_id"])))
+		if ('current_card' in kwargs) and (int(kwargs["current_card"]) > 0 and int(kwargs["current_card"]) <= context["num_cards"]):
+			context["card"] = models.Card.objects.filter(user=self.request.user, collection_id=int(kwargs["collection_id"]), cardSet_id=int(kwargs["cardset_id"]), position=int(kwargs["current_card"])).first()
 
 		return context
