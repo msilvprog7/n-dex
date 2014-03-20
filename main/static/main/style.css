@@ -1,6 +1,6 @@
 
 .jumbotron {
-	background-color: #d8c78a;
+	background-color: #9ed580;
 }
 
 	p {
@@ -46,4 +46,8 @@
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
+}
+
+button {
+	margin-top: 3px;
 }

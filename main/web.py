@@ -196,6 +196,20 @@ class CardView(TemplateView):
 			#redirect
 			return redirect("/home/" + str(cardset.collection_id) + "/" + str(cardset.id) + "/" + "1#edit")
 
+		elif ('new_card' in request.POST and request.POST["new_card"] == "card-in-position") and ('new_card_position' in request.POST):
+			# shift other cards from this position (MUST DO in reverse, else you're editing what you changed)
+			for currentPosition in reversed(range(int(request.POST["new_card_position"]), num_cards + 1)):
+				currentCard = models.Card.objects.filter(user=request.user, collection_id=cardset.collection_id, cardSet_id=cardset.id, position=currentPosition).first()
+				currentCard.position += 1
+				currentCard.save()
+
+			# create new card in position
+			new_card = models.Card(user=request.user, collection_id=cardset.collection_id, cardSet_id=cardset.id, position=int(request.POST["new_card_position"]), front="", back="")
+			new_card.save()
+
+			# redirect to edit
+			return redirect("/home/" + str(cardset.collection_id) + "/" + str(cardset.id) + "/" + request.POST["new_card_position"] + "#edit")
+
 		elif ('edit_card' in request.POST and request.POST['edit_card'] == "edit-card") and ('front' in request.POST and 'frontImage' in request.POST and 'back' in request.POST):
 			#update card content
 			if ('current_card' in kwargs and int(kwargs["current_card"]) > 0 and int(kwargs["current_card"]) <= num_cards):

@@ -148,26 +148,46 @@
 				</div>
 			</div>
 
-			<div class="row right shifted" style="margin-top: 20px;">
+			<div class="row shifted" style="margin-top: 20px;">
 
-				<form class="inline" action="/home/{{ cardset.collection_id }}/{{ cardset.id }}/{{ card.position }}" method="post" id="delete_card_form">
-				{% csrf_token %}
-					<input type="hidden" name="delete_card" value="delete-card" />
-				</form>
-				<button class="btn btn-danger" id="delete_card"><i class="fa fa-minus-circle"></i> Delete</button>
+				<div class="col-lg-6">
+					<form class="inline" action="/home/{{ cardset.collection_id }}/{{ cardset.id }}/" method="post">
+					{% csrf_token %}
+						<input type="hidden" name="new_card" value="card-in-position" />
+						<input type="hidden" name="new_card_position" value="{{ card.position }}" />
+						<button type="submit" class="btn btn-info"><i class="fa fa-mail-reply"></i> New Card (before)</button>
+					</form>
+
+					<form class="inline" action="/home/{{ cardset.collection_id }}/{{ cardset.id }}/" method="post">
+					{% csrf_token %}
+						<input type="hidden" name="new_card" value="card-in-position" />
+						<input type="hidden" name="new_card_position" value="{{ card.position|increment }}" />
+						<button type="submit" class="btn btn-info">New Card (after) <i class="fa fa-mail-forward"></i></button>
+					</form>
+				</div>
+
+				<div class="col-lg-2"></div>
+
+				<div class="col-lg-4 right">
+					<form class="inline" action="/home/{{ cardset.collection_id }}/{{ cardset.id }}/{{ card.position }}" method="post" id="delete_card_form">
+					{% csrf_token %}
+						<input type="hidden" name="delete_card" value="delete-card" />
+					</form>
+					<button class="btn btn-danger" id="delete_card"><i class="fa fa-minus-circle"></i> Delete</button>
 
 
-				<button class="btn btn-info" id="show_edit"><i class="fa fa-cog"></i> Edit</button>
+					<button class="btn btn-info" id="show_edit"><i class="fa fa-cog"></i> Edit</button>
 
-				<form class="inline" action="/home/{{ cardset.collection_id }}/{{ cardset.id }}/{{ card.position|decrement }}" method="post">
-				{% csrf_token %}
-					<button class="btn btn-success" {% if card.position <= 1 %}disabled{% endif %}><i class="fa fa-arrow-circle-o-left"></i> prev</button>
-				</form>
-				
-				<form class="inline" action="/home/{{ cardset.collection_id }}/{{ cardset.id }}/{{ card.position|increment }}" method="post">
-				{% csrf_token %}
-					<button class="btn btn-success" {% if card.position >= num_cards %}disabled{% endif %}>next <i class="fa fa-arrow-circle-o-right"></i></button>
-				</form>
+					<form class="inline" action="/home/{{ cardset.collection_id }}/{{ cardset.id }}/{{ card.position|decrement }}" method="post">
+					{% csrf_token %}
+						<button class="btn btn-success" {% if card.position <= 1 %}disabled{% endif %}><i class="fa fa-arrow-circle-o-left"></i> prev</button>
+					</form>
+					
+					<form class="inline" action="/home/{{ cardset.collection_id }}/{{ cardset.id }}/{{ card.position|increment }}" method="post">
+					{% csrf_token %}
+						<button class="btn btn-success" {% if card.position >= num_cards %}disabled{% endif %}>next <i class="fa fa-arrow-circle-o-right"></i></button>
+					</form>
+				</div>
 			</div>
 		</div>
 		<div class="container" style="display: none;" id="edit-view">
@@ -235,16 +255,30 @@
 				<br />
 
 				<div class="row shifted">
-					<form class="inline" action="/home/{{ cardset.collection_id }}/{{ cardset.id }}/1" method="post">
-					{% csrf_token %}
-						<button type="submit" class="btn btn-success" {% if num_cards == 0 %}disabled{% endif %}>View</button>
-					</form>
-					
-					<form class="inline" action="" method="post">
-					{% csrf_token %}
-						<input type="hidden" name="new_card" value="card-on-top" />
-						<button type="submit" class="btn btn-success"><i class="fa fa-pencil"></i> New Card (on top)</button>
-					</form>
+					<div class="col-lg-12">
+						<form class="inline" action="/home/{{ cardset.collection_id }}/{{ cardset.id }}/1" method="post">
+						{% csrf_token %}
+							<button type="submit" class="btn btn-success" {% if num_cards == 0 %}disabled{% endif %}>View</button>
+						</form>
+						
+						<form class="inline" action="" method="post">
+						{% csrf_token %}
+							<input type="hidden" name="new_card" value="card-on-top" />
+							<button type="submit" class="btn btn-info"><i class="fa fa-pencil"></i> New Card (on top)</button>
+						</form>
+
+						<form class="inline" action="" method="post">
+						{% csrf_token %}
+							<input type="hidden" name="new_card" value="card-in-position" />
+							<input type="hidden" name="new_card_position" value="{{ num_cards|increment }}" />
+							<button type="submit" class="btn btn-info">New Card (at end) <i class="fa fa-pencil"></i></button>
+						</form>
+
+						<form class="inline" action="/home/{{ cardset.collection_id }}/{{ cardset.id }}/{{ num_cards}}" method="post">
+						{% csrf_token %}
+							<button type="submit" class="btn btn-success" {% if num_cards == 0 %}disabled{% endif %}>View from End</button>
+						</form>
+					</div>
 				</div>
 		</div>
 	{% endif %}
