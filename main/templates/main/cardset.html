@@ -165,10 +165,9 @@
 						<button type="submit" class="btn btn-info">New Card (after) <i class="fa fa-mail-forward"></i></button>
 					</form>
 				</div>
+				
 
-				<div class="col-lg-2"></div>
-
-				<div class="col-lg-4 right">
+				<div class="col-lg-6 right">
 					<form class="inline" action="/home/{{ cardset.collection_id }}/{{ cardset.id }}/{{ card.position }}" method="post" id="delete_card_form">
 					{% csrf_token %}
 						<input type="hidden" name="delete_card" value="delete-card" />
