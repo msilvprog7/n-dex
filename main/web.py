@@ -88,7 +88,7 @@ class CollectionView(TemplateView):
 		context = super(CollectionView, self).get_context_data(**kwargs)
 
 		context["collection"] = models.Collection.objects.filter(user=self.request.user, id=int(kwargs["collection_id"])).first()
-		context["cardsets"] = models.CardSet.objects.filter(user=self.request.user, collection=context["collection"])
+		context["cardsets"] = models.CardSet.objects.filter(user=self.request.user, collection=context["collection"]).order_by("-datetime")
 
 		return context
 
