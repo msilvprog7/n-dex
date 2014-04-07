@@ -77,7 +77,7 @@ DATABASES = {
 
 
 
-IS_HEROKU = True
+IS_HEROKU = False
 
 if IS_HEROKU:
     # Parse database configuration from $DATABASE_URL

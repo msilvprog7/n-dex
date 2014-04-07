@@ -54,7 +54,8 @@
 
 	<div class="jumbotron">
 		<h2>{{ collection.name }}</h2>
-		<h4 class="shifted">{{ collection.description }}</h4>
+		<h4>{{ collection.description }}</h4>
+		<hr />
 		<button id="add_cardset_btn" class="btn btn-primary"><i class="fa fa-plus"></i> add cardset</button>
 		<div class="row adjust-top-slight" id="add_cardset_row" style={% if messages %}""{% else %}"display: none;"{% endif %}>
 			<div class="col-lg-6">

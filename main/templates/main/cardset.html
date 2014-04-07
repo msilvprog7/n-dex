@@ -201,12 +201,9 @@
 			</div>
 
 			<div class="row shifted" style="margin-top: 20px;">
-
-				
-				<div class="col-lg-4"></div>
 				
 
-				<div class="col-lg-8 right">
+				<div class="col-lg-12 right">
 
 					<form class="inline" action="/home/{{ cardset.collection_id }}/{{ cardset.id }}/{{ card.position|decrement }}" method="post">
 					{% csrf_token %}
@@ -219,6 +216,7 @@
 					</form>
 
 				</div>
+
 			</div>
 
 		</div>
@@ -282,10 +280,10 @@
 	{% else %}
 		<div class="jumbotron">
 				<h2>{{ cardset.name }}</h2>
-				<h4 class="shifted">{{ cardset.description }}</h4>
-				<br />
+				<h4>{{ cardset.description }}</h4>
+				<hr />
 
-				<div class="row shifted">
+				<div class="row">
 					<div class="col-lg-12">
 						<form class="inline" action="/home/{{ cardset.collection_id }}/{{ cardset.id }}/1" method="post">
 						{% csrf_token %}
